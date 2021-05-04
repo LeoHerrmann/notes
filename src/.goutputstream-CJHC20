@@ -1,0 +1,73 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+
+class Header extends React.Component {
+    render() {
+        return (
+            <header>
+                <h1>Notes</h1>
+            </header>
+        );
+    }
+}
+
+class NotesList extends React.Component {
+    render() {
+        return (
+            <div className="notes_list">
+                empty
+            </div>
+        );
+    }
+}
+
+function NewNoteButton() {
+    return (<button>New note</button>)
+}
+
+class NoteEditor extends React.Component {
+    render(props) {
+        return (
+            <div className="note_editor">
+                <textarea/>
+                <button onClick={() => this.props.saveNote(5)}>Save Note</button>
+            </div>
+        )
+    }
+}
+
+class App extends React.Component {
+    saveNote(e) {
+        console.log(e, "test")
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <Header/>
+                <NotesList/>
+                <NewNoteButton/>
+                <NoteEditor saveNote={() => (this.saveNote(5))}/>
+            </div>
+        );
+    }
+}
+
+ReactDOM.render(
+    <App/>,
+    document.getElementById("root")
+);
+
+
+
+/*
+notesList = {
+    id: {
+        title: "Title",
+        content: "Content",
+        creationDate: "YYYY-MM-DD",
+        lastEdited: "YYYY-MM-DD"
+    }
+}
+*/

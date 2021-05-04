@@ -1,17 +1,284 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+
+class Header extends React.Component {
+    render() {
+        return (
+            <header>
+                <h1>Notes</h1>
+            </header>
+        );
+    }
+}
+
+class NotesList extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            menuVisible: false,
+            menuID: null
+        };
+    }
+
+    showMenu(e, id) {
+        e.preventDefault();
+
+        this.setState({
+            menuVisible: true,
+            menuID: id
+        });
+    }
+
+    hideMenu() {
+        this.setState({
+            menuVisible: false,
+            menuID: null
+        });
+    }
+
+    render(props) {
+        var listContent = <div className="placeholder_text">No notes</div>;
+        var noteMenu;
+
+        if (this.props.notes.length > 0) {
+            listContent = [];
+
+            for (let note of this.props.notes) {
+                listContent.push(
+                    <div
+                        className="note"
+                        key={note.id}
+                        onClick={() => this.props.openNote(note.id)}
+                        onContextMenu={(e) => this.showMenu(e, note.id)}
+                    >
+                        {note.title}
+                    </div>
+                );
+            }
+
+            if (this.state.menuVisible) {
+                noteMenu =
+                    <div className="menu">
+                        <div
+                            className="overlay"
+                            onClick={() => this.hideMenu()}
+                        ></div>
+                        <div className="content">
+                            <div onClick={() => {this.props.deleteNote(this.state.menuID); this.hideMenu();}}>Delete</div>
+                            <div onClick={() => this.hideMenu()}>Close</div>
+                        </div>
+                    </div>;
+            }
+        }
+
+        return (
+            <div className="notes_list">
+                {listContent}
+                {noteMenu}
+                <button onClick={this.props.createNote}>Create note</button>
+            </div>
+        );
+    }
+}
+
+class NoteEditor extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            noteToEdit: props.noteToEdit
+        };
+    }
+
+    componentDidUpdate() {
+        if (this.props.noteToEdit.id !== this.state.noteToEdit.id) {
+            this.setState({
+                noteToEdit: this.props.noteToEdit
+            });
+        }
+    }
+
+    handleTitleChange = event => {
+        this.setState({
+            noteToEdit: {
+                id: this.state.noteToEdit.id,
+                title: event.target.value,
+                content: this.state.noteToEdit.content
+            }
+        });
+    };
+
+    handleContentChange = event => {
+        this.setState({
+            noteToEdit: {
+                id: this.state.noteToEdit.id,
+                title: this.state.noteToEdit.title,
+                content: event.target.value
+            }
+        });
+    };
+
+    render(props) {
+        if (this.props.noteToEdit.id) {
+            return (
+                <div className="note_editor">
+                    <input value={this.state.noteToEdit.title} onChange={this.handleTitleChange}/>
+                    <textarea value={this.state.noteToEdit.content} onChange={this.handleContentChange}/>
+                    <button onClick={this.props.closeEditor}>Close editor</button>
+                    <button onClick={() => this.props.saveNote({
+                        id: this.state.noteToEdit.id,
+                        title: this.state.noteToEdit.title,
+                        content: this.state.noteToEdit.content
+                    })}>
+                        Save note
+                    </button>
+                </div>
+            )
+        }
+
+        else {
+            return null;
+        }
+
+    }
+}
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            idCounter: 1,
+            notes: [],
+            editorID: null
+        };
+
+        var notesData = JSON.parse(localStorage.getItem("notesData"));
+
+        if (notesData) {
+            this.state.idCounter = notesData.idCounter;
+            this.state.notes = notesData.notes;
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.notes !== this.state.notes) {
+            this.saveToLocalStorage();
+        }
+    }
+
+    openNote(id) {
+        this.setState({
+            editorID: id
+        });
+    }
+
+    createNote() {
+        this.setState({
+            editorID: this.state.idCounter,
+            idCounter: this.state.idCounter + 1
+        });
+    }
+
+    saveNote(note) {
+        var editedNote = JSON.parse(JSON.stringify(note));
+        var notes = JSON.parse(JSON.stringify(this.state.notes));
+        var isNewNote = true;
+
+        for (let i in notes) {
+            if (notes[i].id === editedNote.id) {
+                notes[i] = note;
+                isNewNote = false;
+                break;
+            }
+        }
+
+        if (isNewNote) {
+            notes.push(editedNote);
+        }
+
+        this.setState({notes: notes});
+    }
+
+    deleteNote(id) {
+        var notes = JSON.parse(JSON.stringify(this.state.notes));
+
+        for (let i in notes) {
+            if (notes[i].id === id) {
+                notes.splice(i, 1);
+                break;
+            }
+        }
+
+        this.setState({notes: notes});
+    }
+
+    saveToLocalStorage() {
+        var notesData = {
+            notes: this.state.notes,
+            idCounter: this.state.idCounter
+        };
+
+        localStorage.setItem("notesData", JSON.stringify(notesData));
+console.log("speichern")
+    }
+
+    closeEditor() {
+        this.setState({editorID: null});
+    }
+
+    render() {
+        var noteToEdit = {
+            id: this.state.editorID,
+            title: "",
+            content: ""
+        };
+
+        for (let note of this.state.notes) {
+            if (note.id === this.state.editorID) {
+                noteToEdit = JSON.parse(JSON.stringify(note));
+                break;
+            }
+        }
+
+        return (
+            <div className="App">
+                <Header/>
+ 
+                <NotesList
+                    notes={this.state.notes}
+                    openNote={(e) => this.openNote(e)}
+                    createNote={() => this.createNote()}
+                    deleteNote={(e) => this.deleteNote(e)}
+                />
+
+                <NoteEditor
+                    noteToEdit={noteToEdit}
+                    saveNote={((e) => this.saveNote(e))}
+                    closeEditor={() => this.closeEditor()}
+                />
+            </div>
+        );
+    }
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <App/>,
+    document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+/*
+notesList = [
+    {
+        id: 99,
+        title: "Title",
+        content: "Content",
+        creationDate: "YYYY-MM-DD",
+        lastEdited: "YYYY-MM-DD"
+    },
+    ...
+]
+*/
