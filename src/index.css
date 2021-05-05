@@ -36,7 +36,7 @@
 }
 
 button {
-    height: var(--space-3);
+    height: var(--space-4);
     padding: 0 var(--space--1);
     font-size: var(--space--1);
     background-color: #FFFFFF;
@@ -79,24 +79,24 @@ header {
 
 header > button {
     float: left;
-    margin-top: calc((var(--space-5) - var(--space-3)) / 2);
+    margin-top: calc((var(--space-6) - var(--space-4)) / 2);
     margin-right: var(--space-0);
 }
 
 header > h1 {
     margin: 0;
     font-size: var(--space-2);
-    line-height: var(--space-5);
+    line-height: var(--space-6);
 }
 
 header + .placeholder {
-    height: var(--space-5);
+    height: var(--space-6);
 }
 
 
 
 .notes_list > .note, .notes_list > .placeholder_text {
-    line-height: var(--space-4);
+    line-height: var(--space-5);
     border-bottom: 1px solid #bbb;
     padding: 0 var(--space-0);
 }
@@ -113,14 +113,14 @@ header + .placeholder {
 
 .note_editor {
     position: fixed;
-    top: var(--space-5);
+    top: var(--space-6);
     left: 0;
     width: 100%;
-    height: calc(100% - var(--space-5));
+    height: calc(100% - var(--space-6));
     padding: var(--space-0);
     background-color: #FFFFFF;
     display: grid;
-    grid-template-rows: var(--space-3) auto var(--space-3);
+    grid-template-rows: var(--space-4) auto var(--space-4);
     grid-template-columns: 1fr auto;
     grid-gap: var(--space--1);
 }
