@@ -192,12 +192,6 @@ class App extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.notes !== this.state.notes) {
-            this.saveToLocalStorage();
-        }
-    }
-
     openNote(id) {
         this.setState({
             editorID: id
@@ -228,7 +222,9 @@ class App extends React.Component {
             notes.push(editedNote);
         }
 
-        this.setState({notes: notes});
+        this.setState({notes: notes}, () => {
+            this.saveToLocalStorage();
+        });
     }
 
     deleteNote(id) {
@@ -241,7 +237,9 @@ class App extends React.Component {
             }
         }
 
-        this.setState({notes: notes});
+        this.setState({notes: notes}, () => {
+            this.saveToLocalStorage();
+        });
     }
 
     saveToLocalStorage() {
