@@ -10,7 +10,10 @@ class Header extends React.Component {
             header = <header><h1>Notes</h1></header>
         }
         else if (this.props.view === "noteeditor") {
-            header = <header><button>Close</button><h1>Edit</h1></header>
+            header = <header>
+                <button onClick={this.props.closeEditor}>Close</button>
+                <h1>Edit</h1>
+            </header>
         }
 
         return (
@@ -77,8 +80,13 @@ class NotesList extends React.Component {
                             onClick={() => this.hideMenu()}
                         ></div>
                         <div className="content">
-                            <div onClick={() => {this.props.deleteNote(this.state.menuID); this.hideMenu();}}>Delete</div>
-                            <div onClick={() => this.hideMenu()}>Close</div>
+                            <div
+                                className="text_negative"
+                                onClick={() => {this.props.deleteNote(this.state.menuID); this.hideMenu();}}
+                            >
+                                Delete
+                            </div>
+                            <div onClick={() => this.hideMenu()}>Cancel</div>
                         </div>
                     </div>;
             }
@@ -267,6 +275,7 @@ class App extends React.Component {
             <div className="App">
                 <Header
                     view={this.state.editorID ? "noteeditor" : "noteslist"}
+                    closeEditor={() => this.closeEditor()}
                 />
  
                 <NotesList
@@ -279,7 +288,6 @@ class App extends React.Component {
                 <NoteEditor
                     noteToEdit={noteToEdit}
                     saveNote={((e) => this.saveNote(e))}
-                    closeEditor={() => this.closeEditor()}
                 />
             </div>
         );
