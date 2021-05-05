@@ -39,7 +39,7 @@ button {
     padding: 0 var(--space--1);
     font-size: var(--space--1);
     background-color: #FFFFFF;
-    border: 2px solid #BBBBBB;
+    border: 1px solid #BBBBBB;
     text-transform: uppercase;
     font-weight: 600;
     color: inherit;
@@ -48,7 +48,7 @@ button {
 input, textarea {
     width: 100%;
     font-size: var(--space-0);
-    border: 2px solid #BBBBBB;
+    border: 1px solid #BBBBBB;
     color: inherit;
 }
 
@@ -101,9 +101,14 @@ header + .placeholder {
 
 
 .notes_list > .note, .notes_list > .placeholder_text {
-    line-height: var(--space-5);
     border-bottom: 1px solid #bbb;
-    padding: 0 var(--space-0);
+    padding: var(--space-0) var(--space-0);
+}
+
+.notes_list > .note > .date {
+    margin-top: var(--space--3);
+    font-size: var(--space--1);
+    color: hsl(0, 0%, 30%);
 }
 
 .notes_list > .placeholder_text {

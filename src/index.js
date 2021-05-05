@@ -67,7 +67,8 @@ class NotesList extends React.Component {
                         onClick={() => this.props.openNote(note.id)}
                         onContextMenu={(e) => this.showMenu(e, note.id)}
                     >
-                        {note.title}
+                        <div className="title">{note.title}</div>
+                        <div className="date">{new Date(note.created).toLocaleString()}</div>
                     </div>
                 );
             }
@@ -309,9 +310,14 @@ notesList = [
         id: 99,
         title: "Title",
         content: "Content",
-        creationDate: "YYYY-MM-DD",
-        lastEdited: "YYYY-MM-DD"
+        created: "YYYY-MM-DD",
+        lastUpdated: "YYYY-MM-DD"
     },
     ...
 ]
+*/
+
+/*
+sort by lastUpdated:
+notes.sort((a, b) => (a.lastUpdated < b.lastUpdated) ? 1 : -1)
 */
