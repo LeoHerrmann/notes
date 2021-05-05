@@ -124,7 +124,8 @@ class NoteEditor extends React.Component {
             noteToEdit: {
                 id: this.state.noteToEdit.id,
                 title: event.target.value,
-                content: this.state.noteToEdit.content
+                content: this.state.noteToEdit.content,
+                created: this.state.noteToEdit.created
             }
         });
     };
@@ -134,7 +135,8 @@ class NoteEditor extends React.Component {
             noteToEdit: {
                 id: this.state.noteToEdit.id,
                 title: this.state.noteToEdit.title,
-                content: event.target.value
+                content: event.target.value,
+                created: this.state.noteToEdit.created
             }
         });
     };
@@ -158,7 +160,9 @@ class NoteEditor extends React.Component {
                         onClick={() => this.props.saveNote({
                             id: this.state.noteToEdit.id,
                             title: this.state.noteToEdit.title,
-                            content: this.state.noteToEdit.content
+                            content: this.state.noteToEdit.content,
+                            created: this.state.noteToEdit.created,
+                            lastUpdated: new Date().toJSON()
                         })}
                     >
                         Save note
@@ -259,7 +263,8 @@ class App extends React.Component {
         var noteToEdit = {
             id: this.state.editorID,
             title: "",
-            content: ""
+            content: "",
+            created: new Date().toJSON()
         };
 
         for (let note of this.state.notes) {
