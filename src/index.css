@@ -66,6 +66,7 @@ body {
     margin: 0;
     line-height: var(--factor);
     color: hsl(0, 0%, 10%);
+    background-color: #FFFFFF;
 }
 
 
