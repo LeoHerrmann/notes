@@ -4,11 +4,18 @@ import './index.css';
 
 class Header extends React.Component {
     render() {
+        var header;
+
+        if (this.props.view === "noteslist") {
+            header = <header><h1>Notes</h1></header>
+        }
+        else if (this.props.view === "noteeditor") {
+            header = <header><button>Close</button><h1>Edit</h1></header>
+        }
+
         return (
             <div>
-                <header>
-                    <h1>Notes</h1>
-                </header>
+                {header}
 
                 <div className="placeholder"></div>
             </div>
@@ -138,14 +145,14 @@ class NoteEditor extends React.Component {
                         onChange={this.handleContentChange}
                         placeholder="Content"
                     />
-                    <button onClick={this.props.closeEditor}>
-                        Close editor
-                    </button>
-                    <button onClick={() => this.props.saveNote({
-                        id: this.state.noteToEdit.id,
-                        title: this.state.noteToEdit.title,
-                        content: this.state.noteToEdit.content
-                    })}>
+                    <button
+                        className="save_note_button"
+                        onClick={() => this.props.saveNote({
+                            id: this.state.noteToEdit.id,
+                            title: this.state.noteToEdit.title,
+                            content: this.state.noteToEdit.content
+                        })}
+                    >
                         Save note
                     </button>
                 </div>
@@ -236,7 +243,6 @@ class App extends React.Component {
         };
 
         localStorage.setItem("notesData", JSON.stringify(notesData));
-console.log("speichern")
     }
 
     closeEditor() {
@@ -259,7 +265,9 @@ console.log("speichern")
 
         return (
             <div className="App">
-                <Header/>
+                <Header
+                    view={this.state.editorID ? "noteeditor" : "noteslist"}
+                />
  
                 <NotesList
                     notes={this.state.notes}
