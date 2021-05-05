@@ -67,7 +67,8 @@ class NotesList extends React.Component {
                         onClick={() => this.props.openNote(note.id)}
                         onContextMenu={(e) => this.showMenu(e, note.id)}
                     >
-                        {note.title}
+                        <div className="title">{note.title}</div>
+                        <div className="date">{new Date(note.created).toLocaleString()}</div>
                     </div>
                 );
             }
@@ -124,7 +125,8 @@ class NoteEditor extends React.Component {
             noteToEdit: {
                 id: this.state.noteToEdit.id,
                 title: event.target.value,
-                content: this.state.noteToEdit.content
+                content: this.state.noteToEdit.content,
+                created: this.state.noteToEdit.created
             }
         });
     };
@@ -134,7 +136,8 @@ class NoteEditor extends React.Component {
             noteToEdit: {
                 id: this.state.noteToEdit.id,
                 title: this.state.noteToEdit.title,
-                content: event.target.value
+                content: event.target.value,
+                created: this.state.noteToEdit.created
             }
         });
     };
@@ -158,7 +161,9 @@ class NoteEditor extends React.Component {
                         onClick={() => this.props.saveNote({
                             id: this.state.noteToEdit.id,
                             title: this.state.noteToEdit.title,
-                            content: this.state.noteToEdit.content
+                            content: this.state.noteToEdit.content,
+                            created: this.state.noteToEdit.created,
+                            lastUpdated: new Date().toJSON()
                         })}
                     >
                         Save note
@@ -259,7 +264,8 @@ class App extends React.Component {
         var noteToEdit = {
             id: this.state.editorID,
             title: "",
-            content: ""
+            content: "",
+            created: new Date().toJSON()
         };
 
         for (let note of this.state.notes) {
@@ -304,9 +310,14 @@ notesList = [
         id: 99,
         title: "Title",
         content: "Content",
-        creationDate: "YYYY-MM-DD",
-        lastEdited: "YYYY-MM-DD"
+        created: "YYYY-MM-DD",
+        lastUpdated: "YYYY-MM-DD"
     },
     ...
 ]
+*/
+
+/*
+sort by lastUpdated:
+notes.sort((a, b) => (a.lastUpdated < b.lastUpdated) ? 1 : -1)
 */
