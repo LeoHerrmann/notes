@@ -5,9 +5,13 @@ import './index.css';
 class Header extends React.Component {
     render() {
         return (
-            <header>
-                <h1>Notes</h1>
-            </header>
+            <div>
+                <header>
+                    <h1>Notes</h1>
+                </header>
+
+                <div className="placeholder"></div>
+            </div>
         );
     }
 }
@@ -124,9 +128,19 @@ class NoteEditor extends React.Component {
         if (this.props.noteToEdit.id) {
             return (
                 <div className="note_editor">
-                    <input value={this.state.noteToEdit.title} onChange={this.handleTitleChange}/>
-                    <textarea value={this.state.noteToEdit.content} onChange={this.handleContentChange}/>
-                    <button onClick={this.props.closeEditor}>Close editor</button>
+                    <input
+                        value={this.state.noteToEdit.title}
+                        onChange={this.handleTitleChange}
+                        placeholder="Title"
+                    />
+                    <textarea
+                        value={this.state.noteToEdit.content}
+                        onChange={this.handleContentChange}
+                        placeholder="Content"
+                    />
+                    <button onClick={this.props.closeEditor}>
+                        Close editor
+                    </button>
                     <button onClick={() => this.props.saveNote({
                         id: this.state.noteToEdit.id,
                         title: this.state.noteToEdit.title,
