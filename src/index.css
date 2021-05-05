@@ -27,7 +27,6 @@
 * {
     box-sizing: border-box;
     font-family: "Rubik", sans-serif;
-    color: hsl(0, 0%, 10%);
 }
 
 .placeholder_text {
@@ -43,12 +42,14 @@ button {
     border: 2px solid #BBBBBB;
     text-transform: uppercase;
     font-weight: 600;
+    color: inherit;
 }
 
 input, textarea {
     width: 100%;
     font-size: var(--space-0);
     border: 2px solid #BBBBBB;
+    color: inherit;
 }
 
 textarea {
@@ -64,6 +65,7 @@ textarea {
 body {
     margin: 0;
     line-height: var(--factor);
+    color: hsl(0, 0%, 10%);
 }
 
 
@@ -73,14 +75,16 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    background-color: #EEEEEE;
     padding: 0 var(--space-0);
+    background-color: #334455;
+    color: #FFFFFF;
 }
 
 header > button {
     float: left;
     margin-top: calc((var(--space-6) - var(--space-4)) / 2);
     margin-right: var(--space-0);
+    background: transparent;
 }
 
 header > h1 {
