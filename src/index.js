@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './fontello/css/fontello.css';
 
 class Header extends React.Component {
     render() {
@@ -11,7 +12,7 @@ class Header extends React.Component {
         }
         else if (this.props.view === "noteeditor") {
             header = <header>
-                <button onClick={this.props.closeEditor}>Close</button>
+                <button className="icon-back" onClick={this.props.closeEditor}></button>
                 <h1>Edit</h1>
             </header>
         }
@@ -97,7 +98,7 @@ class NotesList extends React.Component {
             <div className="notes_list">
                 {listContent}
                 {noteMenu}
-                <button onClick={this.props.createNote}>Create note</button>
+                <button className="icon-add" onClick={this.props.createNote}></button>
             </div>
         );
     }
