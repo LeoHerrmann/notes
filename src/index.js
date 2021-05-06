@@ -275,24 +275,35 @@ class App extends React.Component {
             }
         }
 
-        return (
-            <div className="App">
-                <Header
-                    view={this.state.editorID ? "noteeditor" : "noteslist"}
-                    closeEditor={() => this.closeEditor()}
-                />
- 
+        var view = this.state.editorID ? "noteeditor" : "noteslist";
+        var main_content;
+
+        if (view === "noteslist") {
+            main_content = 
                 <NotesList
                     notes={this.state.notes}
                     openNote={(e) => this.openNote(e)}
                     createNote={() => this.createNote()}
                     deleteNote={(e) => this.deleteNote(e)}
                 />
-
+        }
+        else if (view === "noteeditor") {
+            main_content =
                 <NoteEditor
                     noteToEdit={noteToEdit}
                     saveNote={((e) => this.saveNote(e))}
                 />
+        }
+
+
+        return (
+            <div className="App">
+                <Header
+                    view={view}
+                    closeEditor={() => this.closeEditor()}
+                />
+ 
+                {main_content}
             </div>
         );
     }
