@@ -179,3 +179,8 @@ header + .placeholder {
 .menu > .content > div {
     line-height: var(--space-3);
 }
+
+.menu > .content > div > .icon-delete::before,
+.menu > .content > div > .icon-cancel::before {
+    margin: 0 1ch 0 0;
+}

@@ -86,9 +86,13 @@ class NotesList extends React.Component {
                                 className="text_negative"
                                 onClick={() => {this.props.deleteNote(this.state.menuID); this.hideMenu();}}
                             >
+                                <i className="icon-delete"></i>
                                 Delete
                             </div>
-                            <div onClick={() => this.hideMenu()}>Cancel</div>
+                            <div onClick={() => this.hideMenu()}>
+                                <i className="icon-cancel"></i>
+                                Cancel
+                            </div>
                         </div>
                     </div>;
             }
