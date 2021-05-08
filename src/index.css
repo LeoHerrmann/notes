@@ -52,6 +52,13 @@ input, textarea {
     font-size: var(--space-0);
     border: 1px solid #BBBBBB;
     color: inherit;
+    padding: var(--space-0) var(--space-0);
+    border-radius: var(--space--2);
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: hsl(0, 0%, 95%);
+    border: 0;
+    border-bottom: 2px solid hsl(208, 25%, 45%);
 }
 
 textarea {
@@ -142,7 +149,7 @@ header + .placeholder {
     padding: var(--space-0);
     background-color: #FFFFFF;
     display: grid;
-    grid-template-rows: var(--space-4) auto var(--space-4);
+    grid-template-rows: var(--space-5) auto var(--space-4);
     grid-template-columns: 1fr auto;
     grid-gap: var(--space--1);
     z-index: -10;
