@@ -75,13 +75,24 @@ class NotesList extends React.Component {
             }
 
             if (this.state.menuVisible) {
+                let noteTitle;
+
+                for (let note of this.props.notes) {
+                    if (note.id == this.state.menuID) {
+                        noteTitle = note.title;
+                        break;
+                    }
+                }
+
                 noteMenu =
                     <div className="menu">
                         <div
                             className="overlay"
                             onClick={() => this.hideMenu()}
                         ></div>
+
                         <div className="content">
+                            <h2>{noteTitle}</h2>
                             <div
                                 className="text_negative"
                                 onClick={() => {this.props.deleteNote(this.state.menuID); this.hideMenu();}}

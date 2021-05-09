@@ -197,6 +197,16 @@ header + .placeholder {
     z-index: 10;
 }
 
+.menu > .content > h2 {
+    margin: 0;
+    padding: 0 var(--space-0);
+    font-size: var(--space-1);
+    line-height: var(--space-4);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .menu > .content > div {
     line-height: var(--space-4);
     padding: 0 var(--space-0);
