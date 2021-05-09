@@ -57,10 +57,44 @@ class NotesList extends React.Component {
         var listContent = <div className="placeholder_text">No notes</div>;
         var noteMenu;
 
-        if (this.props.notes.length > 0) {
+        var notes = JSON.parse(JSON.stringify(this.props.notes));
+
+
+        //sort notes
+        if (this.props.sortBy === "created") {
+            notes = notes.sort((a, b) => (a.created < b.created) ? 1 : -1);
+        }
+
+        else if (this.props.sortBy === "lastUpdated") {
+            notes = notes.sort((a, b) => (a.lastUpdated < b.lastUpdated) ? 1 : -1);
+        }
+
+        else if (this.props.sortBy === "title") {
+            notes = notes.sort((a, b) => {
+                var titleA = a.title.toUpperCase();
+                var titleB = b.title.toUpperCase();
+
+                if (titleA < titleB) {
+                    return -1;
+                }
+                else if (titleA > titleB) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            });
+        }
+
+        //list notes
+        if (notes.length > 0) {
             listContent = [];
 
-            for (let note of this.props.notes) {
+            for (let note of notes) {
+                var displayDate = this.props.sortBy === "lastUpdated" ? 
+                    new Date(note.lastUpdated).toLocaleString() :
+                    new Date(note.created).toLocaleString();
+
                 listContent.push(
                     <div
                         className="note"
@@ -69,16 +103,17 @@ class NotesList extends React.Component {
                         onContextMenu={(e) => this.showMenu(e, note.id)}
                     >
                         <div className="title">{note.title}</div>
-                        <div className="date">{new Date(note.created).toLocaleString()}</div>
+                        <div className="date">{displayDate}</div>
                     </div>
                 );
             }
 
+            //menu
             if (this.state.menuVisible) {
                 let noteTitle;
 
                 for (let note of this.props.notes) {
-                    if (note.id == this.state.menuID) {
+                    if (note.id === this.state.menuID) {
                         noteTitle = note.title;
                         break;
                     }
@@ -202,7 +237,8 @@ class App extends React.Component {
         this.state = {
             idCounter: 1,
             notes: [],
-            editorID: null
+            editorID: null,
+            sortBy: "created"
         };
 
         var notesData = JSON.parse(localStorage.getItem("notesData"));
@@ -298,6 +334,7 @@ class App extends React.Component {
             main_content = 
                 <NotesList
                     notes={this.state.notes}
+                    sortBy={this.state.sortBy}
                     openNote={(e) => this.openNote(e)}
                     createNote={() => this.createNote()}
                     deleteNote={(e) => this.deleteNote(e)}
