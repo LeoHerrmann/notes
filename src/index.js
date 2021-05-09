@@ -102,7 +102,7 @@ class NotesList extends React.Component {
             <div className="notes_list">
                 {listContent}
                 {noteMenu}
-                <button className="icon-add" onClick={this.props.createNote}></button>
+                <button className="icon-add primary" onClick={this.props.createNote}></button>
             </div>
         );
     }
@@ -162,7 +162,7 @@ class NoteEditor extends React.Component {
                         placeholder="Content"
                     />
                     <button
-                        className="save_note_button"
+                        className="save_note_button primary"
                         onClick={() => this.props.saveNote({
                             id: this.state.noteToEdit.id,
                             title: this.state.noteToEdit.title,
