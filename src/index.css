@@ -38,8 +38,6 @@ button {
     height: var(--space-4);
     padding: 0 var(--space--1);
     font-size: var(--space--1);
-    background-color: #FFFFFF;
-    border: 1px solid #BBBBBB;
     text-transform: uppercase;
     font-weight: 600;
     color: inherit;
@@ -47,11 +45,32 @@ button {
     border-radius: var(--space--2);
 }
 
+button.primary {
+    background-color: hsl(46, 88%, 60%);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+button.primary:active {
+    background-color: hsl(46, 88%, 50%);
+}
+
 input, textarea {
     width: 100%;
     font-size: var(--space-0);
     border: 1px solid #BBBBBB;
     color: inherit;
+    padding: var(--space-0) var(--space-0);
+    border-radius: var(--space--2);
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: hsl(0, 0%, 95%);
+    border: 0;
+    border-bottom: 1px solid hsl(208, 25%, 45%);
+    outline: none;
+}
+
+input:focus, input:active, textarea:focus, textarea:active {
+    border-bottom: 2px solid hsl(208, 25%, 45%);
 }
 
 textarea {
@@ -81,6 +100,7 @@ header {
     padding: 0 var(--space-0);
     background-color: hsl(208, 25%, 45%);
     color: #FFFFFF;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
 header > button {
@@ -90,6 +110,10 @@ header > button {
     background: transparent;
     width: var(--space-4);
     padding: 0;
+}
+
+header > button:active {
+    background: rgba(255,255,255,0.15);
 }
 
 header > h1 {
@@ -107,6 +131,10 @@ header + .placeholder {
 .notes_list > .note, .notes_list > .placeholder_text {
     border-bottom: 1px solid #bbb;
     padding: var(--space-0) var(--space-0);
+}
+
+.notes_list > .note:active {
+    background-color: hsl(0, 0%, 95%);
 }
 
 .notes_list > .note > .date {
@@ -128,8 +156,6 @@ header + .placeholder {
     height: var(--space-6);
     border-radius: 50%;
     font-size: var(--space-1);
-    background-color: hsl(46, 88%, 60%);
-    /*box-shadow: 0 3px 15px 0px rgba(0,0,0,0.3);*/
 }
 
 .note_editor {
@@ -141,9 +167,10 @@ header + .placeholder {
     padding: var(--space-0);
     background-color: #FFFFFF;
     display: grid;
-    grid-template-rows: var(--space-4) auto var(--space-4);
+    grid-template-rows: var(--space-5) auto var(--space-4);
     grid-template-columns: 1fr auto;
     grid-gap: var(--space--1);
+    z-index: -10;
 }
 
 .note_editor > input, .note_editor > textarea {
@@ -152,7 +179,6 @@ header + .placeholder {
 
 .note_editor > .save_note_button {
     grid-column: 2 / 3;
-    background-color: hsl(46, 88%, 60%);
 }
 
 
@@ -171,13 +197,28 @@ header + .placeholder {
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: var(--space-0);
+    padding: var(--space-0) 0;
     background-color: #FFFFFF;
     z-index: 10;
 }
 
+.menu > .content > h2 {
+    margin: 0;
+    padding: 0 var(--space-0);
+    font-size: var(--space-1);
+    line-height: var(--space-4);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .menu > .content > div {
-    line-height: var(--space-3);
+    line-height: var(--space-4);
+    padding: 0 var(--space-0);
+}
+
+.menu > .content > div:active {
+    background-color: hsl(0, 0%, 95%);
 }
 
 .menu > .content > div > .icon-delete::before,

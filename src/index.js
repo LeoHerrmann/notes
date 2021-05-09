@@ -75,13 +75,24 @@ class NotesList extends React.Component {
             }
 
             if (this.state.menuVisible) {
+                let noteTitle;
+
+                for (let note of this.props.notes) {
+                    if (note.id == this.state.menuID) {
+                        noteTitle = note.title;
+                        break;
+                    }
+                }
+
                 noteMenu =
                     <div className="menu">
                         <div
                             className="overlay"
                             onClick={() => this.hideMenu()}
                         ></div>
+
                         <div className="content">
+                            <h2>{noteTitle}</h2>
                             <div
                                 className="text_negative"
                                 onClick={() => {this.props.deleteNote(this.state.menuID); this.hideMenu();}}
@@ -102,7 +113,7 @@ class NotesList extends React.Component {
             <div className="notes_list">
                 {listContent}
                 {noteMenu}
-                <button className="icon-add" onClick={this.props.createNote}></button>
+                <button className="icon-add primary" onClick={this.props.createNote}></button>
             </div>
         );
     }
@@ -162,7 +173,7 @@ class NoteEditor extends React.Component {
                         placeholder="Content"
                     />
                     <button
-                        className="save_note_button"
+                        className="save_note_button primary"
                         onClick={() => this.props.saveNote({
                             id: this.state.noteToEdit.id,
                             title: this.state.noteToEdit.title,
