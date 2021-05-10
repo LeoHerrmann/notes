@@ -29,6 +29,12 @@
       "css": "add",
       "code": 59395,
       "src": "fontawesome"
+    },
+    {
+      "uid": "0cd2582b8c93719d066ee0affd02ac78",
+      "css": "sort",
+      "code": 61792,
+      "src": "fontawesome"
     }
   ]
 }

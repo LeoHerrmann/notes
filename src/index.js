@@ -4,17 +4,68 @@ import './index.css';
 import './fontello/css/fontello.css';
 
 class Header extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            sortingMenuVisible: false
+        };
+    }
+
     render() {
         var header;
 
         if (this.props.view === "noteslist") {
-            header = <header><h1>Notes</h1></header>
+            var sortingMenu;
+
+            if (this.state.sortingMenuVisible) {
+                sortingMenu = 
+                    <div className="sortingMenu">
+                        <div className="overlay" onClick={() => this.setState({sortingMenuVisible: false})}></div>
+
+                        <div className="content">
+                            <div>Sort By</div>
+                            <div>
+                                <input
+                                    id="r1" type="radio" name="sortBy" value="title"
+                                    checked={this.props.sortBy === "title"} 
+                                    onChange={() => {this.props.changeSortBy("title")}}
+                                />
+                                <label htmlFor="r1">Title</label>
+                            </div>
+                            <div>
+                                <input
+                                    id="r2" type="radio" name="sortBy" value="created"
+                                    checked={this.props.sortBy === "created"}
+                                    onChange={() => {this.props.changeSortBy("created")}}
+                                />
+                                <label htmlFor="r2">Created</label>
+                            </div>
+                            <div>
+                                <input
+                                    id="r3" type="radio" name="sortBy" value="lastModified"
+                                    checked={this.props.sortBy === "lastModified"}
+                                    onChange={() => {this.props.changeSortBy("lastModified")}}
+                                />
+                                <label htmlFor="r3">Last Modified</label>
+                            </div>
+                        </div>
+                    </div>
+            }
+
+            header =
+                <header>
+                    <h1>Notes</h1>
+
+                    <button className="menu_button icon-sort" onClick={() => this.setState({sortingMenuVisible: true})}></button>
+                    {sortingMenu}
+                </header>;
         }
         else if (this.props.view === "noteeditor") {
             header = <header>
-                <button className="icon-back" onClick={this.props.closeEditor}></button>
+                <button className="icon-back close_editor_button" onClick={this.props.closeEditor}></button>
                 <h1>Edit</h1>
-            </header>
+            </header>;
         }
 
         return (
@@ -65,8 +116,8 @@ class NotesList extends React.Component {
             notes = notes.sort((a, b) => (a.created < b.created) ? 1 : -1);
         }
 
-        else if (this.props.sortBy === "lastUpdated") {
-            notes = notes.sort((a, b) => (a.lastUpdated < b.lastUpdated) ? 1 : -1);
+        else if (this.props.sortBy === "lastModified") {
+            notes = notes.sort((a, b) => (a.lastModified < b.lastModified) ? 1 : -1);
         }
 
         else if (this.props.sortBy === "title") {
@@ -91,9 +142,9 @@ class NotesList extends React.Component {
             listContent = [];
 
             for (let note of notes) {
-                var displayDate = this.props.sortBy === "lastUpdated" ? 
-                    new Date(note.lastUpdated).toLocaleString() :
-                    new Date(note.created).toLocaleString();
+                var displayDate = this.props.sortBy === "lastModified" ? 
+                    "Last modified: " + new Date(note.lastModified).toLocaleString() :
+                    "Created: " + new Date(note.created).toLocaleString();
 
                 listContent.push(
                     <div
@@ -201,6 +252,7 @@ class NoteEditor extends React.Component {
                         value={this.state.noteToEdit.title}
                         onChange={this.handleTitleChange}
                         placeholder="Title"
+                        type="text"
                     />
                     <textarea
                         value={this.state.noteToEdit.content}
@@ -214,7 +266,7 @@ class NoteEditor extends React.Component {
                             title: this.state.noteToEdit.title,
                             content: this.state.noteToEdit.content,
                             created: this.state.noteToEdit.created,
-                            lastUpdated: new Date().toJSON()
+                            lastModified: new Date().toJSON()
                         })}
                     >
                         Save note
@@ -312,6 +364,13 @@ class App extends React.Component {
         this.setState({editorID: null});
     }
 
+    changeSortBy(criterion) {
+        console.log(criterion)
+        this.setState({
+            sortBy: criterion
+        });
+    }
+
     render() {
         var noteToEdit = {
             id: this.state.editorID,
@@ -353,7 +412,9 @@ class App extends React.Component {
             <div className="App">
                 <Header
                     view={view}
+                    sortBy={this.state.sortBy}
                     closeEditor={() => this.closeEditor()}
+                    changeSortBy={(e) => this.changeSortBy(e)}
                 />
  
                 {main_content}
@@ -375,13 +436,13 @@ notesList = [
         title: "Title",
         content: "Content",
         created: "YYYY-MM-DD",
-        lastUpdated: "YYYY-MM-DD"
+        lastModified: "YYYY-MM-DD"
     },
     ...
 ]
 */
 
 /*
-sort by lastUpdated:
-notes.sort((a, b) => (a.lastUpdated < b.lastUpdated) ? 1 : -1)
+sort by lastModified:
+notes.sort((a, b) => (a.lastModified < b.lastModified) ? 1 : -1)
 */
