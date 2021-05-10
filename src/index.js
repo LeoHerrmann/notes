@@ -298,6 +298,7 @@ class App extends React.Component {
         if (notesData) {
             this.state.idCounter = notesData.idCounter;
             this.state.notes = notesData.notes;
+            this.state.sortBy = notesData.sortBy;
         }
     }
 
@@ -354,7 +355,8 @@ class App extends React.Component {
     saveToLocalStorage() {
         var notesData = {
             notes: this.state.notes,
-            idCounter: this.state.idCounter
+            idCounter: this.state.idCounter,
+            sortBy: this.state.sortBy
         };
 
         localStorage.setItem("notesData", JSON.stringify(notesData));
@@ -365,10 +367,9 @@ class App extends React.Component {
     }
 
     changeSortBy(criterion) {
-        console.log(criterion)
         this.setState({
             sortBy: criterion
-        });
+        }, () => this.saveToLocalStorage());
     }
 
     render() {
