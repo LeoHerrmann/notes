@@ -4,17 +4,68 @@ import './index.css';
 import './fontello/css/fontello.css';
 
 class Header extends React.Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            sortingMenuVisible: false
+        };
+    }
+
     render() {
         var header;
 
         if (this.props.view === "noteslist") {
-            header = <header><h1>Notes</h1></header>
+            var sortingMenu;
+
+            if (this.state.sortingMenuVisible) {
+                sortingMenu = 
+                    <div className="sortingMenu">
+                        <div className="overlay" onClick={() => this.setState({sortingMenuVisible: false})}></div>
+
+                        <div className="content">
+                            <div>Sort By</div>
+                            <div>
+                                <input
+                                    id="r1" type="radio" name="sortBy" value="title"
+                                    checked={this.props.sortBy === "title"} 
+                                    onChange={() => {this.props.changeSortBy("title")}}
+                                />
+                                <label htmlFor="r1">Title</label>
+                            </div>
+                            <div>
+                                <input
+                                    id="r2" type="radio" name="sortBy" value="created"
+                                    checked={this.props.sortBy === "created"}
+                                    onChange={() => {this.props.changeSortBy("created")}}
+                                />
+                                <label htmlFor="r2">Created</label>
+                            </div>
+                            <div>
+                                <input
+                                    id="r3" type="radio" name="sortBy" value="lastModified"
+                                    checked={this.props.sortBy === "lastModified"}
+                                    onChange={() => {this.props.changeSortBy("lastModified")}}
+                                />
+                                <label htmlFor="r3">Last Modified</label>
+                            </div>
+                        </div>
+                    </div>
+            }
+
+            header =
+                <header>
+                    <h1>Notes</h1>
+
+                    <button className="menu_button icon-sort" onClick={() => this.setState({sortingMenuVisible: true})}></button>
+                    {sortingMenu}
+                </header>;
         }
         else if (this.props.view === "noteeditor") {
             header = <header>
-                <button className="icon-back" onClick={this.props.closeEditor}></button>
+                <button className="icon-back close_editor_button" onClick={this.props.closeEditor}></button>
                 <h1>Edit</h1>
-            </header>
+            </header>;
         }
 
         return (
@@ -57,10 +108,44 @@ class NotesList extends React.Component {
         var listContent = <div className="placeholder_text">No notes</div>;
         var noteMenu;
 
-        if (this.props.notes.length > 0) {
+        var notes = JSON.parse(JSON.stringify(this.props.notes));
+
+
+        //sort notes
+        if (this.props.sortBy === "created") {
+            notes = notes.sort((a, b) => (a.created < b.created) ? 1 : -1);
+        }
+
+        else if (this.props.sortBy === "lastModified") {
+            notes = notes.sort((a, b) => (a.lastModified < b.lastModified) ? 1 : -1);
+        }
+
+        else if (this.props.sortBy === "title") {
+            notes = notes.sort((a, b) => {
+                var titleA = a.title.toUpperCase();
+                var titleB = b.title.toUpperCase();
+
+                if (titleA < titleB) {
+                    return -1;
+                }
+                else if (titleA > titleB) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            });
+        }
+
+        //list notes
+        if (notes.length > 0) {
             listContent = [];
 
-            for (let note of this.props.notes) {
+            for (let note of notes) {
+                var displayDate = this.props.sortBy === "lastModified" ? 
+                    "Last modified: " + new Date(note.lastModified).toLocaleString() :
+                    "Created: " + new Date(note.created).toLocaleString();
+
                 listContent.push(
                     <div
                         className="note"
@@ -69,16 +154,17 @@ class NotesList extends React.Component {
                         onContextMenu={(e) => this.showMenu(e, note.id)}
                     >
                         <div className="title">{note.title}</div>
-                        <div className="date">{new Date(note.created).toLocaleString()}</div>
+                        <div className="date">{displayDate}</div>
                     </div>
                 );
             }
 
+            //menu
             if (this.state.menuVisible) {
                 let noteTitle;
 
                 for (let note of this.props.notes) {
-                    if (note.id == this.state.menuID) {
+                    if (note.id === this.state.menuID) {
                         noteTitle = note.title;
                         break;
                     }
@@ -166,6 +252,7 @@ class NoteEditor extends React.Component {
                         value={this.state.noteToEdit.title}
                         onChange={this.handleTitleChange}
                         placeholder="Title"
+                        type="text"
                     />
                     <textarea
                         value={this.state.noteToEdit.content}
@@ -179,7 +266,7 @@ class NoteEditor extends React.Component {
                             title: this.state.noteToEdit.title,
                             content: this.state.noteToEdit.content,
                             created: this.state.noteToEdit.created,
-                            lastUpdated: new Date().toJSON()
+                            lastModified: new Date().toJSON()
                         })}
                     >
                         Save note
@@ -202,7 +289,8 @@ class App extends React.Component {
         this.state = {
             idCounter: 1,
             notes: [],
-            editorID: null
+            editorID: null,
+            sortBy: "created"
         };
 
         var notesData = JSON.parse(localStorage.getItem("notesData"));
@@ -210,6 +298,7 @@ class App extends React.Component {
         if (notesData) {
             this.state.idCounter = notesData.idCounter;
             this.state.notes = notesData.notes;
+            this.state.sortBy = notesData.sortBy;
         }
     }
 
@@ -266,7 +355,8 @@ class App extends React.Component {
     saveToLocalStorage() {
         var notesData = {
             notes: this.state.notes,
-            idCounter: this.state.idCounter
+            idCounter: this.state.idCounter,
+            sortBy: this.state.sortBy
         };
 
         localStorage.setItem("notesData", JSON.stringify(notesData));
@@ -274,6 +364,12 @@ class App extends React.Component {
 
     closeEditor() {
         this.setState({editorID: null});
+    }
+
+    changeSortBy(criterion) {
+        this.setState({
+            sortBy: criterion
+        }, () => this.saveToLocalStorage());
     }
 
     render() {
@@ -298,6 +394,7 @@ class App extends React.Component {
             main_content = 
                 <NotesList
                     notes={this.state.notes}
+                    sortBy={this.state.sortBy}
                     openNote={(e) => this.openNote(e)}
                     createNote={() => this.createNote()}
                     deleteNote={(e) => this.deleteNote(e)}
@@ -316,7 +413,9 @@ class App extends React.Component {
             <div className="App">
                 <Header
                     view={view}
+                    sortBy={this.state.sortBy}
                     closeEditor={() => this.closeEditor()}
+                    changeSortBy={(e) => this.changeSortBy(e)}
                 />
  
                 {main_content}
@@ -338,13 +437,13 @@ notesList = [
         title: "Title",
         content: "Content",
         created: "YYYY-MM-DD",
-        lastUpdated: "YYYY-MM-DD"
+        lastModified: "YYYY-MM-DD"
     },
     ...
 ]
 */
 
 /*
-sort by lastUpdated:
-notes.sort((a, b) => (a.lastUpdated < b.lastUpdated) ? 1 : -1)
+sort by lastModified:
+notes.sort((a, b) => (a.lastModified < b.lastModified) ? 1 : -1)
 */
