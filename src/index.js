@@ -51,8 +51,16 @@ class Header extends React.Component {
                 <header className="notes_list_view">
                     <h1>Notes</h1>
 
-                    <button className="icon-search" onClick={() => this.props.toggleSearchInput()}></button>
-                    <button className="icon-sort" onClick={() => this.toggleSortingMenu()}></button>
+                    <button
+                        className="icon-search"
+                        onClick={() => this.props.toggleSearchInput()}
+                        aria-label="search"
+                    ></button>
+                    <button
+                        className="icon-sort"
+                        onClick={() => this.toggleSortingMenu()}
+                        aria-label="sort"
+                    ></button>
                     <SortingMenu
                         sortBy = {this.props.sortBy}
                         changeSortBy = {this.props.changeSortBy}
@@ -215,7 +223,11 @@ class NotesList extends React.Component {
                     hide={this.hideMenu}
                     deleteNote={this.props.deleteNote}
                 />
-                <button className="icon-add primary" onClick={this.props.createNote}></button>
+                <button
+                    className="icon-add primary"
+                    onClick={this.props.createNote}
+                    aria-label="create"
+                ></button>
             </div>
         );
     }
