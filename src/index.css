@@ -163,6 +163,7 @@ header > .sortingMenu > .content > div {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-gap: 0 1ch;
+    align-items: center;
 }
 
 header + .placeholder {
