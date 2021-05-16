@@ -98,16 +98,27 @@ header {
     top: 0;
     left: 0;
     width: 100%;
+    height: var(--space-6);
     padding: 0 var(--space-0);
     background-color: hsl(208, 25%, 45%);
     color: #FFFFFF;
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    display: grid;
+    grid-gap: var(--space-0);
+    grid-template-rows: var(--space-6);
+    align-items: center;
+}
+
+header.notes_list_view {
+    grid-template-columns: auto var(--space-4) var(--space-4);
+}
+
+header.search_view, header.edit_view {
+    grid-template-columns: var(--space-4) auto;
 }
 
 header > button {
-    margin-top: calc((var(--space-6) - var(--space-4)) / 2);
     background: transparent;
-    width: var(--space-4);
     padding: 0;
 }
 
@@ -115,20 +126,17 @@ header > button:active {
     background: rgba(255,255,255,0.15);
 }
 
-header > .close_editor_button {
-    float: left;
-    margin-right: var(--space-0);
-}
-
-header > .menu_button {
-    float: right;
-}
-
 header > h1 {
     display: inline-block;
     margin: 0;
     font-size: var(--space-2);
-    line-height: var(--space-6);
+}
+
+header > input[type="text"] {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    display: inline-block;
 }
 
 header > .sortingMenu > .content {

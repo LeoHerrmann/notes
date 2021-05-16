@@ -47,7 +47,13 @@ class Header extends React.Component {
         };
     }
 
-    showSortingMenu = () => {
+    componentDidUpdate(prevProps) {
+        if (prevProps.searchInputVisible === false && this.props.searchInputVisible === true) {
+            this.searchInput.focus();            
+        }
+    }
+
+    showSortingMenu = () => { //toggeln?
         this.setState({sortingMenuVisible: true});
     }
 
@@ -58,35 +64,46 @@ class Header extends React.Component {
     render() {
         var header;
 
-        if (this.props.view === "noteslist") {
-            var sortingMenu = 
-                <SortingMenu
-                    sortBy = {this.props.sortBy}
-                    changeSortBy = {this.props.changeSortBy}
-                    visible={this.state.sortingMenuVisible}
-                    hide={this.hideSortingMenu}
-                />
-
+        if (this.props.view === "noteslist" && this.props.searchInputVisible) {
             header =
-                <header>
+                <header className="search_view">
+                    <button className="icon-back" onClick={() => this.props.toggleSearchInput()}></button>
+                    <input
+                        type="text"
+                        placeholder="Search…"
+                        ref={inputEl => (this.searchInput = inputEl)}
+                        onChange={(e) => {this.props.updateFilterString(e.target.value)}}
+                    />
+                </header>;
+        }
+
+        else if (this.props.view === "noteslist") {
+            header =
+                <header className="notes_list_view">
                     <h1>Notes</h1>
 
-                    <button className="menu_button icon-sort" onClick={() => this.showSortingMenu()}></button>
-                    {sortingMenu}
+                    <button className="icon-search" onClick={() => this.props.toggleSearchInput()}></button>
+                    <button className="icon-sort" onClick={() => this.showSortingMenu()}></button>
+                    <SortingMenu
+                        sortBy = {this.props.sortBy}
+                        changeSortBy = {this.props.changeSortBy}
+                        visible={this.state.sortingMenuVisible}
+                        hide={this.hideSortingMenu}
+                    />
                 </header>;
         }
 
         else if (this.props.view === "noteeditor") {
-            header = <header>
-                <button className="icon-back close_editor_button" onClick={this.props.closeEditor}></button>
-                <h1>Edit</h1>
-            </header>;
+            header =
+                <header className="edit_view">
+                    <button className="icon-back" onClick={this.props.closeEditor}></button>
+                    <h1>Edit</h1>
+                </header>;
         }
 
         return (
             <div>
                 {header}
-
                 <div className="placeholder"></div>
             </div>
         );
@@ -125,6 +142,13 @@ class NotesList extends React.Component {
 
         var notes = JSON.parse(JSON.stringify(this.props.notes));
 
+        //filter notes
+        notes = notes.filter((note) => {
+            let titleContainssearchWord = note.title.toLowerCase().indexOf(this.props.searchWord) >= 0;
+            let contentContainssearchWord = note.content.toLowerCase().indexOf(this.props.searchWord) >= 0; 
+
+            return titleContainssearchWord || contentContainssearchWord;
+        });
 
         //sort notes
         if (this.props.sortBy === "created") {
@@ -305,7 +329,9 @@ class App extends React.Component {
             idCounter: 1,
             notes: [],
             editorID: null,
-            sortBy: "created"
+            sortBy: "created",
+            searchInputVisible: false,
+            searchWord: "",
         };
 
         var notesData = JSON.parse(localStorage.getItem("notesData"));
@@ -319,7 +345,9 @@ class App extends React.Component {
 
     openNote(id) {
         this.setState({
-            editorID: id
+            editorID: id,
+            searchInputVisible: false,
+            searchWord: ""
         });
     }
 
@@ -387,6 +415,23 @@ class App extends React.Component {
         }, () => this.saveToLocalStorage());
     }
 
+    toggleSearchInput() {
+        if (this.state.searchInputVisible === false) {
+            this.setState({
+                searchInputVisible: true
+            });
+        }
+        else {
+            this.setState({
+                searchInputVisible: false
+            });
+        }
+    }
+
+    updateFilterString(string) {
+        this.setState({searchWord: string.toLowerCase()});
+    }
+
     render() {
         var noteToEdit = {
             id: this.state.editorID,
@@ -410,6 +455,7 @@ class App extends React.Component {
                 <NotesList
                     notes={this.state.notes}
                     sortBy={this.state.sortBy}
+                    searchWord={this.state.searchWord}
                     openNote={(e) => this.openNote(e)}
                     createNote={() => this.createNote()}
                     deleteNote={(e) => this.deleteNote(e)}
@@ -428,9 +474,12 @@ class App extends React.Component {
             <div className="App">
                 <Header
                     view={view}
+                    searchInputVisible={this.state.searchInputVisible}
                     sortBy={this.state.sortBy}
                     closeEditor={() => this.closeEditor()}
                     changeSortBy={(e) => this.changeSortBy(e)}
+                    toggleSearchInput={() => this.toggleSearchInput()}
+                    updateFilterString={(e) => this.updateFilterString(e)}
                 />
  
                 {main_content}
