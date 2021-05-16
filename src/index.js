@@ -3,64 +3,79 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import './fontello/css/fontello.css';
 
+class SortingMenu extends React.Component {
+    render() {
+        var menu = null;
+
+        if (this.props.visible) {
+            let optionGroups = [];
+
+            for (let option of ["title", "created", "lastModified"]) {
+                optionGroups.push(
+                    <div key={option + "_group"}>
+                        <input
+                            id={option + "_radio"} type="radio" name="sortBy" value={option}
+                            checked={this.props.sortBy === option} 
+                            onChange={() => {this.props.changeSortBy(option)}}
+                        />
+                        <label htmlFor={option + "_radio"}>{option.charAt(0).toUpperCase() + option.slice(1)}</label>
+                    </div>
+                )
+            }
+
+            menu = 
+                <div className="sortingMenu">
+                    <div className="overlay" onClick={() => this.props.hide()}></div>
+
+                    <div className="content">
+                        <div>Sort By</div>
+                        {optionGroups}
+                    </div>
+                </div>
+        }
+
+        return menu;
+    }
+}
+
 class Header extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             sortingMenuVisible: false
         };
+    }
+
+    showSortingMenu = () => {
+        this.setState({sortingMenuVisible: true});
+    }
+
+    hideSortingMenu = () => {
+        this.setState({sortingMenuVisible: false});
     }
 
     render() {
         var header;
 
         if (this.props.view === "noteslist") {
-            var sortingMenu;
-
-            if (this.state.sortingMenuVisible) {
-                sortingMenu = 
-                    <div className="sortingMenu">
-                        <div className="overlay" onClick={() => this.setState({sortingMenuVisible: false})}></div>
-
-                        <div className="content">
-                            <div>Sort By</div>
-                            <div>
-                                <input
-                                    id="r1" type="radio" name="sortBy" value="title"
-                                    checked={this.props.sortBy === "title"} 
-                                    onChange={() => {this.props.changeSortBy("title")}}
-                                />
-                                <label htmlFor="r1">Title</label>
-                            </div>
-                            <div>
-                                <input
-                                    id="r2" type="radio" name="sortBy" value="created"
-                                    checked={this.props.sortBy === "created"}
-                                    onChange={() => {this.props.changeSortBy("created")}}
-                                />
-                                <label htmlFor="r2">Created</label>
-                            </div>
-                            <div>
-                                <input
-                                    id="r3" type="radio" name="sortBy" value="lastModified"
-                                    checked={this.props.sortBy === "lastModified"}
-                                    onChange={() => {this.props.changeSortBy("lastModified")}}
-                                />
-                                <label htmlFor="r3">Last Modified</label>
-                            </div>
-                        </div>
-                    </div>
-            }
+            var sortingMenu = 
+                <SortingMenu
+                    sortBy = {this.props.sortBy}
+                    changeSortBy = {this.props.changeSortBy}
+                    visible={this.state.sortingMenuVisible}
+                    hide={this.hideSortingMenu}
+                />
 
             header =
                 <header>
                     <h1>Notes</h1>
 
-                    <button className="menu_button icon-sort" onClick={() => this.setState({sortingMenuVisible: true})}></button>
+                    <button className="menu_button icon-sort" onClick={() => this.showSortingMenu()}></button>
                     {sortingMenu}
                 </header>;
         }
+
         else if (this.props.view === "noteeditor") {
             header = <header>
                 <button className="icon-back close_editor_button" onClick={this.props.closeEditor}></button>
