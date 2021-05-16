@@ -25,7 +25,7 @@ class SortingMenu extends React.Component {
 
             menu = 
                 <div className="sortingMenu">
-                    <div className="overlay" onClick={() => this.props.hide()}></div>
+                    <div className="overlay" onClick={() => this.props.toggleVisibility()}></div>
 
                     <div className="content">
                         <div>Sort By</div>
@@ -49,17 +49,18 @@ class Header extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.searchInputVisible === false && this.props.searchInputVisible === true) {
-            this.searchInput.focus();            
+            this.searchInput.focus();
         }
     }
 
-    showSortingMenu = () => { //toggeln?
-        this.setState({sortingMenuVisible: true});
-    }
-
-    hideSortingMenu = () => {
-        this.setState({sortingMenuVisible: false});
-    }
+    toggleSortingMenu = () => {
+        if (this.state.sortingMenuVisible) {
+            this.setState({sortingMenuVisible: false});
+        }
+        else {
+            this.setState({sortingMenuVisible: true});
+        }
+    };
 
     render() {
         var header;
@@ -83,12 +84,12 @@ class Header extends React.Component {
                     <h1>Notes</h1>
 
                     <button className="icon-search" onClick={() => this.props.toggleSearchInput()}></button>
-                    <button className="icon-sort" onClick={() => this.showSortingMenu()}></button>
+                    <button className="icon-sort" onClick={() => this.toggleSortingMenu()}></button>
                     <SortingMenu
                         sortBy = {this.props.sortBy}
                         changeSortBy = {this.props.changeSortBy}
                         visible={this.state.sortingMenuVisible}
-                        hide={this.hideSortingMenu}
+                        toggleVisibility={this.toggleSortingMenu}
                     />
                 </header>;
         }
