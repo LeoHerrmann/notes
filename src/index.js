@@ -3,40 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import './fontello/css/fontello.css';
 
-class SortingMenu extends React.Component {
-    render() {
-        var menu = null;
 
-        if (this.props.visible) {
-            let optionGroups = [];
-
-            for (let option of ["title", "created", "lastModified"]) {
-                optionGroups.push(
-                    <div key={option + "_group"}>
-                        <input
-                            id={option + "_radio"} type="radio" name="sortBy" value={option}
-                            checked={this.props.sortBy === option} 
-                            onChange={() => {this.props.changeSortBy(option)}}
-                        />
-                        <label htmlFor={option + "_radio"}>{option.charAt(0).toUpperCase() + option.slice(1)}</label>
-                    </div>
-                )
-            }
-
-            menu = 
-                <div className="sortingMenu">
-                    <div className="overlay" onClick={() => this.props.toggleVisibility()}></div>
-
-                    <div className="content">
-                        <div>Sort By</div>
-                        {optionGroups}
-                    </div>
-                </div>
-        }
-
-        return menu;
-    }
-}
+//Header
 
 class Header extends React.Component {
     constructor(props) {
@@ -111,6 +79,44 @@ class Header extends React.Component {
     }
 }
 
+class SortingMenu extends React.Component {
+    render() {
+        var menu = null;
+
+        if (this.props.visible) {
+            let optionGroups = [];
+
+            for (let option of ["title", "created", "lastModified"]) {
+                optionGroups.push(
+                    <div key={option + "_group"}>
+                        <input
+                            id={option + "_radio"} type="radio" name="sortBy" value={option}
+                            checked={this.props.sortBy === option} 
+                            onChange={() => {this.props.changeSortBy(option)}}
+                        />
+                        <label htmlFor={option + "_radio"}>{option.charAt(0).toUpperCase() + option.slice(1)}</label>
+                    </div>
+                )
+            }
+
+            menu = 
+                <div className="sortingMenu">
+                    <div className="overlay" onClick={() => this.props.toggleVisibility()}></div>
+
+                    <div className="content">
+                        <div>Sort By</div>
+                        {optionGroups}
+                    </div>
+                </div>
+        }
+
+        return menu;
+    }
+}
+
+
+//NotesList
+
 class NotesList extends React.Component {
     constructor(props) {
         super(props);
@@ -130,7 +136,7 @@ class NotesList extends React.Component {
         });
     }
 
-    hideMenu() {
+    hideMenu = () => {
         this.setState({
             menuVisible: false,
             menuID: null
@@ -139,7 +145,6 @@ class NotesList extends React.Component {
 
     render(props) {
         var listContent = <div className="placeholder_text">No notes</div>;
-        var noteMenu;
 
         var notes = JSON.parse(JSON.stringify(this.props.notes));
 
@@ -198,52 +203,68 @@ class NotesList extends React.Component {
                     </div>
                 );
             }
-
-            //menu
-            if (this.state.menuVisible) {
-                let noteTitle;
-
-                for (let note of this.props.notes) {
-                    if (note.id === this.state.menuID) {
-                        noteTitle = note.title;
-                        break;
-                    }
-                }
-
-                noteMenu =
-                    <div className="menu">
-                        <div
-                            className="overlay"
-                            onClick={() => this.hideMenu()}
-                        ></div>
-
-                        <div className="content">
-                            <h2>{noteTitle}</h2>
-                            <div
-                                className="text_negative"
-                                onClick={() => {this.props.deleteNote(this.state.menuID); this.hideMenu();}}
-                            >
-                                <i className="icon-delete"></i>
-                                Delete
-                            </div>
-                            <div onClick={() => this.hideMenu()}>
-                                <i className="icon-cancel"></i>
-                                Cancel
-                            </div>
-                        </div>
-                    </div>;
-            }
         }
 
         return (
             <div className="notes_list">
                 {listContent}
-                {noteMenu}
+                <NoteListMenu
+                    visible={this.state.menuVisible}
+                    id={this.state.menuID}
+                    notes={this.props.notes}
+                    hide={this.hideMenu}
+                    deleteNote={this.props.deleteNote}
+                />
                 <button className="icon-add primary" onClick={this.props.createNote}></button>
             </div>
         );
     }
 }
+
+class NoteListMenu extends React.Component{
+    render() {
+        var menu = null;
+
+        if (this.props.visible) {
+            var noteTitle;
+
+            for (let note of this.props.notes) {
+                if (note.id === this.props.id) {
+                    noteTitle = note.title;
+                    break;
+                }
+            }
+
+            menu = 
+                <div className="menu">
+                    <div
+                        className="overlay"
+                        onClick={() => this.props.hide()}
+                    ></div>
+
+                    <div className="content">
+                        <h2>{noteTitle}</h2>
+                        <div
+                            className="text_negative"
+                            onClick={() => {this.props.deleteNote(this.props.id); this.props.hide();}}
+                        >
+                            <i className="icon-delete"></i>
+                            Delete
+                        </div>
+                        <div onClick={() => this.props.hide()}>
+                            <i className="icon-cancel"></i>
+                            Cancel
+                        </div>
+                    </div>
+                </div>;
+        }
+
+        return menu;
+    }
+}
+
+
+//NoteEditor
 
 class NoteEditor extends React.Component {
     constructor(props) {
@@ -321,6 +342,9 @@ class NoteEditor extends React.Component {
 
     }
 }
+
+
+//App
 
 class App extends React.Component {
     constructor(props) {
@@ -493,22 +517,3 @@ ReactDOM.render(
     <App/>,
     document.getElementById("root")
 );
-
-
-/*
-notesList = [
-    {
-        id: 99,
-        title: "Title",
-        content: "Content",
-        created: "YYYY-MM-DD",
-        lastModified: "YYYY-MM-DD"
-    },
-    ...
-]
-*/
-
-/*
-sort by lastModified:
-notes.sort((a, b) => (a.lastModified < b.lastModified) ? 1 : -1)
-*/
