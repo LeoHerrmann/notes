@@ -21,7 +21,7 @@ A basic note taking application built with React
 To run this project, install this project using npm:
 
 ```
-$ cd ../lorem
+$ cd ../notes
 $ npm install
 $ npm start
 ```
