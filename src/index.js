@@ -68,7 +68,12 @@ class Header extends React.Component {
             header =
                 <header className="search_view">
                     <button className="icon-back" onClick={() => this.props.toggleSearchInput()}></button>
-                    <input type="text" placeholder="Search…" ref={inputEl => (this.searchInput = inputEl)}/>
+                    <input
+                        type="text"
+                        placeholder="Search…"
+                        ref={inputEl => (this.searchInput = inputEl)}
+                        onChange={(e) => {this.props.updateFilterString(e.target.value)}}
+                    />
                 </header>;
         }
 
@@ -137,6 +142,13 @@ class NotesList extends React.Component {
 
         var notes = JSON.parse(JSON.stringify(this.props.notes));
 
+        //filter notes
+        notes = notes.filter((note) => {
+            let titleContainssearchWord = note.title.toLowerCase().indexOf(this.props.searchWord) >= 0;
+            let contentContainssearchWord = note.content.toLowerCase().indexOf(this.props.searchWord) >= 0; 
+
+            return titleContainssearchWord || contentContainssearchWord;
+        });
 
         //sort notes
         if (this.props.sortBy === "created") {
@@ -318,7 +330,8 @@ class App extends React.Component {
             notes: [],
             editorID: null,
             sortBy: "created",
-            searchInputVisible: false
+            searchInputVisible: false,
+            searchWord: "",
         };
 
         var notesData = JSON.parse(localStorage.getItem("notesData"));
@@ -332,7 +345,9 @@ class App extends React.Component {
 
     openNote(id) {
         this.setState({
-            editorID: id
+            editorID: id,
+            searchInputVisible: false,
+            searchWord: ""
         });
     }
 
@@ -413,6 +428,10 @@ class App extends React.Component {
         }
     }
 
+    updateFilterString(string) {
+        this.setState({searchWord: string.toLowerCase()});
+    }
+
     render() {
         var noteToEdit = {
             id: this.state.editorID,
@@ -436,6 +455,7 @@ class App extends React.Component {
                 <NotesList
                     notes={this.state.notes}
                     sortBy={this.state.sortBy}
+                    searchWord={this.state.searchWord}
                     openNote={(e) => this.openNote(e)}
                     createNote={() => this.createNote()}
                     deleteNote={(e) => this.deleteNote(e)}
@@ -459,6 +479,7 @@ class App extends React.Component {
                     closeEditor={() => this.closeEditor()}
                     changeSortBy={(e) => this.changeSortBy(e)}
                     toggleSearchInput={() => this.toggleSearchInput()}
+                    updateFilterString={(e) => this.updateFilterString(e)}
                 />
  
                 {main_content}
