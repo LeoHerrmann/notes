@@ -58,7 +58,15 @@ class Header extends React.Component {
     render() {
         var header;
 
-        if (this.props.view === "noteslist") {
+        if (this.props.view === "noteslist" && this.props.searchInputVisible) {
+            header =
+                <header className="search_view">
+                    <button className="icon-back" onClick={() => this.props.toggleSearchInput()}></button>
+                    <input type="text" placeholder="Search…"/>
+                </header>;
+        }
+
+        else if (this.props.view === "noteslist") {
             var sortingMenu = 
                 <SortingMenu
                     sortBy = {this.props.sortBy}
@@ -68,19 +76,21 @@ class Header extends React.Component {
                 />
 
             header =
-                <header>
+                <header className="notes_list_view">
                     <h1>Notes</h1>
 
-                    <button className="menu_button icon-sort" onClick={() => this.showSortingMenu()}></button>
+                    <button className="icon-search" onClick={() => this.props.toggleSearchInput()}></button>
+                    <button className="icon-sort" onClick={() => this.showSortingMenu()}></button>
                     {sortingMenu}
                 </header>;
         }
 
         else if (this.props.view === "noteeditor") {
-            header = <header>
-                <button className="icon-back close_editor_button" onClick={this.props.closeEditor}></button>
-                <h1>Edit</h1>
-            </header>;
+            header =
+                <header className="edit_view">
+                    <button className="icon-back" onClick={this.props.closeEditor}></button>
+                    <h1>Edit</h1>
+                </header>;
         }
 
         return (
@@ -305,7 +315,8 @@ class App extends React.Component {
             idCounter: 1,
             notes: [],
             editorID: null,
-            sortBy: "created"
+            sortBy: "created",
+            searchInputVisible: false
         };
 
         var notesData = JSON.parse(localStorage.getItem("notesData"));
@@ -387,6 +398,19 @@ class App extends React.Component {
         }, () => this.saveToLocalStorage());
     }
 
+    toggleSearchInput() {
+        if (this.state.searchInputVisible === false) {
+            this.setState({
+                searchInputVisible: true
+            });
+        }
+        else {
+            this.setState({
+                searchInputVisible: false
+            });
+        }
+    }
+
     render() {
         var noteToEdit = {
             id: this.state.editorID,
@@ -428,9 +452,11 @@ class App extends React.Component {
             <div className="App">
                 <Header
                     view={view}
+                    searchInputVisible={this.state.searchInputVisible}
                     sortBy={this.state.sortBy}
                     closeEditor={() => this.closeEditor()}
                     changeSortBy={(e) => this.changeSortBy(e)}
+                    toggleSearchInput={() => this.toggleSearchInput()}
                 />
  
                 {main_content}
