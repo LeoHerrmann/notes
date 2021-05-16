@@ -47,7 +47,13 @@ class Header extends React.Component {
         };
     }
 
-    showSortingMenu = () => {
+    componentDidUpdate(prevProps) {
+        if (prevProps.searchInputVisible === false && this.props.searchInputVisible === true) {
+            this.searchInput.focus();            
+        }
+    }
+
+    showSortingMenu = () => { //toggeln?
         this.setState({sortingMenuVisible: true});
     }
 
@@ -62,26 +68,23 @@ class Header extends React.Component {
             header =
                 <header className="search_view">
                     <button className="icon-back" onClick={() => this.props.toggleSearchInput()}></button>
-                    <input type="text" placeholder="Search…"/>
+                    <input type="text" placeholder="Search…" ref={inputEl => (this.searchInput = inputEl)}/>
                 </header>;
         }
 
         else if (this.props.view === "noteslist") {
-            var sortingMenu = 
-                <SortingMenu
-                    sortBy = {this.props.sortBy}
-                    changeSortBy = {this.props.changeSortBy}
-                    visible={this.state.sortingMenuVisible}
-                    hide={this.hideSortingMenu}
-                />
-
             header =
                 <header className="notes_list_view">
                     <h1>Notes</h1>
 
                     <button className="icon-search" onClick={() => this.props.toggleSearchInput()}></button>
                     <button className="icon-sort" onClick={() => this.showSortingMenu()}></button>
-                    {sortingMenu}
+                    <SortingMenu
+                        sortBy = {this.props.sortBy}
+                        changeSortBy = {this.props.changeSortBy}
+                        visible={this.state.sortingMenuVisible}
+                        hide={this.hideSortingMenu}
+                    />
                 </header>;
         }
 
@@ -96,7 +99,6 @@ class Header extends React.Component {
         return (
             <div>
                 {header}
-
                 <div className="placeholder"></div>
             </div>
         );
