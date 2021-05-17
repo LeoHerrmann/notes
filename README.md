@@ -1,6 +1,6 @@
 # Notes
 
-A basic note taking application built with React
+A mobile friendly note taking application built with React
 
 
 ## Screenshots
